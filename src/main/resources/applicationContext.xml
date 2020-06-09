@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!--引入db.property文件-->
+    <context:property-placeholder location="classpath:db.properties"/>
+
+    <!--配置数据源-->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <!-- 数据库驱动-->
+        <property name="driverClassName" value="${db.driver}" />
+        <!-- 连接数据库的URL-->
+        <property name="url" value="${db.url}" />
+        <!-- 用户名-->
+        <property name="username" value="${db.username}" />
+        <!-- 密码-->
+        <property name="password" value="${db.password}" />
+        <!-- 初始化连接数-->
+        <property name="initialSize" value="3" />
+        <!-- 最小连接数-->
+        <property name="minIdle" value="3" />
+        <!-- 最大连接数-->
+        <property name="maxActive" value="20" />
+        <!-- 最长等待时间-->
+        <property name="maxWait" value="60000" />
+    </bean>
+
+    <!--配置sqlsession-->
+    <bean id="sqlSession" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!--注入数据源-->
+        <property name="dataSource" ref="dataSource"/>
+        <!--指定配置文件位置-->
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+    </bean>
+
+    <!--事务管理器，依赖于数据源-->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <!--开启事务注解-->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <!--配置mapper扫描器-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="jj.dao"/>
+    </bean>
+    <!--扫描service-->
+    <context:component-scan base-package="jj.service"/>
+
+
+</beans>
