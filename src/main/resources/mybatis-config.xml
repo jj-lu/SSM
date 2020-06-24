@@ -4,14 +4,35 @@
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
 
-    <!--控制台输出mybatis日志-->
     <settings>
+        <!--控制台输出mybatis日志-->
         <setting name="logImpl" value="STDOUT_LOGGING"/>
+        <setting name="lazyLoadingEnabled" value="true"/>
+        <!--开启二级缓存-->
+        <setting name="cacheEnabled" value="true"/>
+
+
     </settings>
 
     <typeAliases>
         <package name="jj.po"/>
     </typeAliases>
+
+    <environments default="mysql">
+        <environment id="mysql">
+            <transactionManager type="JDBC"></transactionManager>
+            <dataSource type="POOLED">
+                <!-- 数据库驱动-->
+                <property name="driver" value="com.mysql.jdbc.Driver" />
+                <!-- 连接数据库的URL-->
+                <property name="url" value="jdbc:mysql://localhost:3306/studenttest?useUnicode=true&amp;characterEncoding=UTF-8" />
+                <!-- 用户名-->
+                <property name="username" value="root" />
+                <!-- 密码-->
+                <property name="password" value="123456" />
+            </dataSource>
+        </environment>
+    </environments>
 
     <mappers>
         <mapper resource="mapper/StudentDao.xml"></mapper>
